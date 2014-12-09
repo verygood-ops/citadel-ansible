@@ -57,6 +57,6 @@ License
 
 ## Contributors
 
-- `@mahmoudimus <https://github.com/mahmoudimus>`_
-- `@victorlin <https://github.com/victorlin>`_
-- `@bninja <https://github.com/bninja>`_
+- [@mahmoudimus](https://github.com/mahmoudimus)
+- [@victorlin](https://github.com/victorlin)
+- [@bninja](https://github.com/bninja)
