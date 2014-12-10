@@ -16,12 +16,13 @@ As per [Ansible's recommendations for distributing plugins](http://docs.ansible.
 
 - /usr/share/ansible/plugins, in a subfolder for each plugin type:
 
-* action_plugins
-* lookup_plugins
-* callback_plugins
-* connection_plugins
-* filter_plugins
-* vars_plugins
+  * action_plugins
+  * lookup_plugins
+  * callback_plugins
+  * connection_plugins
+  * filter_plugins
+  * vars_plugins
+
 
 - change the [lookup_plugins](http://docs.ansible.com/intro_configuration.html#lookup-plugins) variable in your `ansible.cfg`, which can be placed in any top-level ansible playbook.
 
