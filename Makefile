@@ -3,18 +3,23 @@ DEFAULT_TARGET=/usr/share/ansible/plugins
 TARGET?=$(DEFAULT_TARGET)
 
 define CITADEL_PY
-import libcitadel
+import s3lookup
 
-class LookupModule(libcitadel.S3LookupModule):
+class LookupModule(s3lookup.S3LookupModule):
     bucket_var = 'citadel_bucket'
     profile_var = 'citadel_profile'
     region_var = 'citadel_region'
+
 endef
 
-define LIBCITADEL_ANNOTATION
+define S3LOOKUP_ANNOTATION
 
 # simple installation directly into lookup_plugins
-LookupModule = S3LookupModule
+class LookupModule(S3LookupModule):
+	bucket_var = 'citadel_bucket'
+	profile_var = 'citadel_profile'
+	region_var = 'citadel_region'
+
 endef
 
 .PHONY: all install
@@ -22,11 +27,11 @@ endef
 all: install
 
 export CITADEL_PY
-export LIBCITADEL_ANNOTATION
+export S3LOOKUP_ANNOTATION
 install:
 	if [ ! -d $(TARGET)/lookup_plugins ]; then mkdir -p $(TARGET)/lookup_plugins; fi
-	cp -p libcitadel.py $(TARGET)/lookup_plugins/citadel.py
-	echo "$$LIBCITADEL_ANNOTATION" >> $(TARGET)/lookup_plugins/citadel.py
+	cp -p s3lookup.py $(TARGET)/lookup_plugins/citadel.py
+	echo "$$S3LOOKUP_ANNOTATION" >> $(TARGET)/lookup_plugins/citadel.py
 
 
 # if we don't want to install libcitadel in the ansible virtualenv (or

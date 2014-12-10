@@ -62,7 +62,14 @@ class LookupModule(libcitadel.S3LookupModule):
 
 ### In your YAML files
 
-Coming.
+Wherever you set your var files, you can configure the citadel_bucket as follows:
+
+```yaml
+---
+  vars:
+    citadel_bucket: your-secret-bucket
+
+```
 
 ## Usage
 
