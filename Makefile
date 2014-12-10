@@ -1,4 +1,4 @@
-.SHELL=/bin/bash
+SHELL=/bin/bash
 TARGET?=/usr/share/ansible/plugins
 
 define CITADEL_PY
