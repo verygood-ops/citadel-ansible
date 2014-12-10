@@ -1,23 +1,67 @@
 # Citadel
 
-An ansible module that implements a simple secrets management store for teams and organizations, backed by Amazon's S3 and IAM APIs.
+An ansible lookup_plugin and module that implements a simple secrets management store for teams and organizations, backed by Amazon's S3 and IAM APIs.
 
 Inspired by [Noah Kantrowitz](https://github.com/coderanger)'s [poise/citadel](https://github.com/poise/citadel). [See here for his blog post](https://coderanger.net/chef-secrets/).
 
 ## Installation
 
+### Dependencies
+
+Requires: `boto`
+
+### Installation Options
+
+As per [Ansible's recommendations for distributing plugins](http://docs.ansible.com/developing_plugins.html#distributing-plugins), it is recommended to put common plugins in:
+
+- /usr/share/ansible/plugins, in a subfolder for each plugin type:
+
+* action_plugins
+* lookup_plugins
+* callback_plugins
+* connection_plugins
+* filter_plugins
+* vars_plugins
+
+- change the [lookup_plugins](http://docs.ansible.com/intro_configuration.html#lookup-plugins) variable in your `ansible.cfg`, which can be placed in any top-level ansible playbook.
+
+- you may also just add the plugin in a top-level playbook, in folders named the same as indicated above.
+
+### Install in `/usr/share/ansible/plugins`
+
+```bash
+make install
+```
+
+### Install in a target plugin directory
+
+This also works for bundling it.
+
+```bash
+make install TARGET='"/your/plugin/directory/here"'
+```
+
+Don't forget to check that the `ansible.cfg` in your top-level playbook has the `lookup_plugins` variable set to the path.
+
 ## Configuration
 
-### In your YAML files
+### In your `lookup_plugins` directory
 
-### As a library
+Create a python file, `citadel.py` with these contents:
 
 ```python
-class LookupModule(confu.ansible.S3LookupModule):
+import libcitadel   # should be on your path
+
+
+class LookupModule(libcitadel.S3LookupModule):
     bucket_var = 'citadel_bucket'
     profile_var = 'citadel_profile'
     region_var = 'citadel_region'
 ```
+
+### In your YAML files
+
+Coming.
 
 ## Usage
 
@@ -40,7 +84,7 @@ When ansible processes the yaml files, it will evaluate the lookup function and 
 License
 -------
 
-`ansible-citadel-module` is licensed under the Apache 2.0 license. Please create an issue if this license doesn't work for you.
+`citadel-ansible` is licensed under the Apache 2.0 license. Please create an issue if this license doesn't work for you.
 
 ## Contribute
 - Check for open issues or open a fresh issue to start a discussion around a
