@@ -126,7 +126,9 @@ class S3LookupModule(object):
                         message=e.message,
                     )
                 )
-
+            # if there are newlines in the contents, they are not rendered
+            # correctly
+            contents = contents.encode('unicode-escape')
             # cache
             if self.cache is not None:
                 cache_key = self.cache_key(options['bucket'], key_name)
