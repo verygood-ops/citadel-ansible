@@ -59,7 +59,7 @@ class S3LookupModule(object):
     def __init__(self, basedir=None, **kwargs):
         self.basedir = basedir
 
-    def run(self, terms, inject=None, **kwargs):
+    def run(self, terms, inject=None, escape=False, **kwargs):
         # XXX: messes with logging
         import ansible.utils
 
@@ -126,9 +126,10 @@ class S3LookupModule(object):
                         message=e.message,
                     )
                 )
-            # if there are newlines in the contents, they are not rendered
-            # correctly
-            contents = contents.encode('unicode-escape')
+            if escape:
+                # if there are newlines in the contents, they are not rendered
+                # correctly
+                contents = contents.encode('unicode-escape')
             # cache
             if self.cache is not None:
                 cache_key = self.cache_key(options['bucket'], key_name)
