@@ -4,8 +4,10 @@ TARGET?=$(DEFAULT_TARGET)
 
 define CITADEL_PY
 import s3lookup
+from ansible.plugins.lookup import LookupBase
 
-class LookupModule(s3lookup.S3LookupModule):
+
+class LookupModule(s3lookup.S3LookupModule, LookupBase):
     bucket_var = 'citadel_bucket'
     profile_var = 'citadel_profile'
     region_var = 'citadel_region'
@@ -13,9 +15,10 @@ class LookupModule(s3lookup.S3LookupModule):
 endef
 
 define S3LOOKUP_ANNOTATION
+from ansible.plugins.lookup import LookupBase
 
 # simple installation directly into lookup_plugins
-class LookupModule(S3LookupModule):
+class LookupModule(S3LookupModule, LookupBase):
 	bucket_var = 'citadel_bucket'
 	profile_var = 'citadel_profile'
 	region_var = 'citadel_region'

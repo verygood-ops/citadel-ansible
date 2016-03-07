@@ -53,10 +53,11 @@ Don't forget to check that the `ansible.cfg` in your top-level playbook has the 
 Create a python file, `citadel.py` with these contents:
 
 ```python
-import libcitadel   # should be on your path
+import s3lookup   # should be on your path
+from ansible.plugins.lookup import LookupBase
 
 
-class LookupModule(libcitadel.S3LookupModule):
+class LookupModule(s3lookup.S3LookupModule, LookupBase):
     bucket_var = 'citadel_bucket'
     profile_var = 'citadel_profile'
     region_var = 'citadel_region'
