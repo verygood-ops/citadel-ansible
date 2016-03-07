@@ -1,5 +1,7 @@
 # Citadel
 
+[![Build Status](https://circleci.com/gh/verygood-ops/citadel-ansible.svg?&style=shield&circle-token=d32fa1113491c762e2eb4bcbfb39bd6aec6cd145)](https://circleci.com/gh/verygood-ops/citadel-ansible)
+
 An ansible lookup_plugin and module that implements a simple secrets management store for teams and organizations, backed by Amazon's S3 and IAM APIs.
 
 Inspired by [Noah Kantrowitz](https://github.com/coderanger)'s [poise/citadel](https://github.com/poise/citadel). [See here for his blog post](https://coderanger.net/chef-secrets/).

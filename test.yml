@@ -1,0 +1,13 @@
+---
+- name: citadel secrets test
+  connection: local
+  hosts: localhost
+  gather_facts: false
+  vars:
+  - region: "us-east-1"
+  - citadel_bucket: test-citadel-bucket
+    # this secret value comes from the citadel bucket on s3.
+  - citadel_secret_value: "{{ lookup('citadel', '/common/secret_value').strip() }}"
+  tasks:
+    - name: Demonstrate citadel
+      debug: msg={{ citadel_secret_value }}
