@@ -1,5 +1,9 @@
 from __future__ import unicode_literals, absolute_import
+import os
 
+from ansible.utils import listify
+from ansible.errors import AnsibleError
+from ansible.plugins.lookup import LookupBase
 import boto.provider
 import boto.s3
 
@@ -46,29 +50,24 @@ class S3LookupModule(object):
         }
         if inject:
             for option, var in [
-                    ('bucket', self.bucket_var),
-                    ('profile', self.profile_var),
-                    ('region', self.region_var),
-                ]:
+                ('bucket', self.bucket_var),
+                ('profile', self.profile_var),
+                ('region', self.region_var),
+            ]:
                 if var and var in inject:
                     options[option] = inject[var]
         return options
 
-    # LookupModule
-
-    def __init__(self, basedir=None, **kwargs):
-        self.basedir = basedir
-
-    def run(self, terms, inject=None, escape=False, **kwargs):
-        # XXX: messes with logging
-        import ansible.utils
+    def run(self, terms, variables=None, **kwargs):
+        basedir = self.get_basedir(variables)
+        escape = variables.get('escape', False)
 
         # XXX: https://github.com/ansible/ansible/issues/7370
-
-        terms = ansible.utils.listify_lookup_plugin_terms(terms, self.basedir, inject)
+        terms = listify.listify_lookup_plugin_terms(terms, self._templar, self._loader)
 
         ret = []
 
+        inject = variables.get('vars', {})
         defaults = self.options(inject)
 
         for term in terms:
@@ -83,7 +82,7 @@ class S3LookupModule(object):
                     assert(name in options)
                     options[name] = value
             except (ValueError, AssertionError), e:
-                raise ansible.errors.AnsibleError(e)
+                raise AnsibleError(e)
 
             # cache
             if self.cache is not None:
@@ -95,6 +94,12 @@ class S3LookupModule(object):
 
             # connect
             profile_name = options['profile']
+            if not profile_name:
+                for env_var in ('AWS_DEFAULT_PROFILE', 'AWS_PROFILE'):
+                    profile_name = os.environ.get(env_var)
+                    if profile_name:
+                        break
+
             cxn = None
             while cxn is None:
                 try:
@@ -106,11 +111,10 @@ class S3LookupModule(object):
                         cxn = boto.connect_s3(profile_name=profile_name)
                 except boto.provider.ProfileNotFoundError, e:
                     if profile_name is None:
-                        raise ansible.errors.AnsibleError('Unable to connect to s3')
+                        raise AnsibleError('Unable to connect to s3')
                     profile_name = None
                 except (boto.exception.BotoClientError, boto.exception.S3ResponseError), e:
-                    raise ansible.errors.AnsibleError('Unable to connect to s3')
-
+                    raise AnsibleError('Unable to connect to s3')
             # read
             # NOTE: lookup deferred (validate=False) so we don't need s3:List* permission
             bucket = cxn.get_bucket(options['bucket'], validate=False)
@@ -118,7 +122,7 @@ class S3LookupModule(object):
             try:
                 contents = key.get_contents_as_string()
             except boto.exception.S3ResponseError, e:
-                raise ansible.errors.AnsibleError(
+                raise AnsibleError(
                     'Unable to get s3://{bucket}/{key} contents - {code}, {message}'.format(
                         bucket=options['bucket'],
                         key=key_name,
