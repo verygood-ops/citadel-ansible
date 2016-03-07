@@ -6,6 +6,8 @@ Inspired by [Noah Kantrowitz](https://github.com/coderanger)'s [poise/citadel](h
 
 ## Installation
 
+This version of citadel supports ansible2.0+, if you are looking for ansible1.x, please see the [1.9 branch](https://github.com/verygood-ops/citadel-ansible/tree/1.9).
+
 ### Dependencies
 
 Requires: `boto`
